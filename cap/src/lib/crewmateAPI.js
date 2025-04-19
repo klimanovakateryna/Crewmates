@@ -29,7 +29,9 @@ export async function createCrewmate(payload) {
         name: payload.name,
         breed: payload.breed,
         fur_color: payload.fur_color,
-        age_months: payload.age_months
+        age_months: payload.age_months,
+        character: payload.character || '',
+        special_traits: payload.special_traits || ''
       }
     ])
     .select();

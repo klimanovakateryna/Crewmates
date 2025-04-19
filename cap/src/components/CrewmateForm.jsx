@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { createCrewmate } from '../lib/crewmateApi';
+import { createCrewmate } from '../lib/crewmateAPI';
 
 export default function CrewmateForm({ onSuccess }) {
   const [form, setForm] = useState({
     name: '',
     breed: '',
     fur_color: '',
-    age_months: 0
+    age_months: 0,
+    character: '',
+    special_traits: ''
   });
 
   const handleChange = e => {
@@ -21,7 +23,7 @@ export default function CrewmateForm({ onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit} className="form-box">
-      {['name', 'breed', 'fur_color'].map(field => (
+      {['name', 'breed', 'fur_color', 'character', 'special_traits'].map(field => (
         <label key={field}>
           {field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
           <input name={field} value={form[field]} onChange={handleChange} required />

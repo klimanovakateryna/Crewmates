@@ -1,27 +1,16 @@
-// src/pages/EditPage.jsx
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { fetchCrewmateById, updateCrewmate, deleteCrewmate } from '../lib/crewmateApi';
+import { fetchCrewmateById, updateCrewmate, deleteCrewmate } from '../lib/crewmateAPI';
 
 export default function EditPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const numericId = parseInt(id, 10); 
   const [form, setForm] = useState(null);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await fetchCrewmateById(id);
-        console.log("Fetched crewmate:", data);
-        setForm(data);
-      } catch (err) {
-        console.error("Fetch error:", err.message);
-        setError("Failed to load crewmate.");
-      }
-    }
-    loadData();
-  }, [id]);
+    fetchCrewmateById(numericId).then(setForm);
+  }, [numericId]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -29,28 +18,17 @@ export default function EditPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await updateCrewmate(id, form);
-      navigate('/gallery');
-    } catch (err) {
-      console.error("Update error:", err.message);
-      alert('Error updating crewmate');
-    }
+    await updateCrewmate(numericId, form);
+    navigate('/gallery');
   };
 
   const handleDelete = async () => {
     if (confirm('Are you sure you want to delete this crewmate?')) {
-      try {
-        await deleteCrewmate(id);
-        navigate('/gallery');
-      } catch (err) {
-        console.error("Delete error:", err.message);
-        alert('Error deleting crewmate');
-      }
+      await deleteCrewmate(numericId);
+      navigate('/gallery');
     }
   };
 
-  if (error) return <div className="centered"><p>{error}</p></div>;
   if (!form) return <div className="centered"><p>Loading...</p></div>;
 
   return (
@@ -78,6 +56,14 @@ export default function EditPage() {
             onChange={handleChange}
             required
           />
+        </label>
+        <label>
+          Character:
+          <input name="character" value={form.character || ''} onChange={handleChange} />
+        </label>
+        <label>
+          Special Traits:
+          <input name="special_traits" value={form.special_traits || ''} onChange={handleChange} />
         </label>
         <button type="submit">Save Changes</button>
         <button
